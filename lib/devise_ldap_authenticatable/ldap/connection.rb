@@ -33,7 +33,11 @@ module Devise
         @required_attributes = ldap_config["require_attribute"]
         @required_attributes_presence = ldap_config["require_attribute_presence"]
 
-        @ldap.auth ldap_config["admin_user"], ldap_config["admin_password"] if params[:admin]
+        # Original code in comment below, changed code to work for my situation
+        # @ldap.auth ldap_config["admin_user"], ldap_config["admin_password"] if params[:admin]
+
+        # Authenticate using the user that is logging in and use their credentials to query the LDAP server
+        @ldap.auth "#{params[:login]}@#{ldap.host}", params[:password]
 
         @login = params[:login]
         @password = params[:password]
